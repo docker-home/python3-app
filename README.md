@@ -2,7 +2,7 @@
 python3 app base image
 
 ```
-FROM python:3.7.4
+FROM python:3.6.6
 MAINTAINER wuyue92tree@163.com
 
 WORKDIR /data/src
