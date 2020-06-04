@@ -10,7 +10,7 @@ docker run -d -p 9001:9001 wuyue/python3-app
 ### alpine
 ```
 docker build -t wuyue/python3-app:alpine -f Dockerfile.alpine .
-docker run -d -p 9001:9001 wuyue/python3-app
+docker run -d -p 9001:9001 wuyue/python3-app:alpine
 ```
 
 ### with_nginx
