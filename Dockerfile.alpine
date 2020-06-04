@@ -1,12 +1,14 @@
-FROM python:3.7
+FROM python:3.7-alpine
 LABEL maintainer="wuyue92tree@163.com"
 
 WORKDIR /data/src
 
 ADD requirements.txt requirements.txt
 
+RUN apk add -U tzdata
 RUN pip install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com \
     && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN apk del tzdata
 
 RUN rm -rf ~/.cache/pip
 
