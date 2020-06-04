@@ -1,5 +1,5 @@
-FROM python:3.6.6
-MAINTAINER wuyue92tree@163.com
+FROM python:3.7-alpine
+LABEL maintainer="wuyue92tree@163.com"
 
 WORKDIR /data/src
 
