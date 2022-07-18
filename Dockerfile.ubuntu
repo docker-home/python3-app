@@ -1,0 +1,40 @@
+FROM ubuntu:18.04
+LABEL maintainer="wuyue92tree@163.com"
+
+WORKDIR /data/src
+
+# 替换源
+RUN sed -i s@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list
+RUN sed -i s@/security.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g /etc/apt/sources.list
+
+RUN apt-get update && apt-get upgrade -y && apt-get clean
+
+# 安装python3.7
+RUN apt-get install -y curl python3.7 python3.7-dev python3.7-distutils && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.7 1 &&\
+    update-alternatives --set python /usr/bin/python3.7 && \
+    curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python get-pip.py --force-reinstall && \
+    rm get-pip.py
+
+# 设置locales & 时区
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get install -y locales tzdata && \
+    locale-gen zh_CN.UTF-8 && \
+    update-locale LANG=zh_CN.UTF-8 LANGUAGE=zh_CN.UTF-8 LC_ALL=zh_CN.UTF-8 && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    dpkg-reconfigure --frontend noninteractive tzdata
+
+COPY requirements.txt requirements.txt
+
+RUN pip install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple --trusted-host mirrors.aliyun.com
+
+RUN rm -rf ~/.cache/pip
+
+COPY supervisor.conf /etc/supervisor/supervisor.conf
+
+WORKDIR /data/src
+
+EXPOSE 9001
+
+CMD supervisord -nc /etc/supervisor/supervisor.conf
